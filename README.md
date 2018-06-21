@@ -16,5 +16,5 @@ https://github.com/himanoa/ttene.nvim の移植。
 
 ```lisp
 (require 'ttene)
-(ttene-mode)
+(global-ttene-mode)
 ```

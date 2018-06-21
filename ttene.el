@@ -78,13 +78,21 @@
     (unless voice
       (error ("no voices installed. try M-x ttene-install-voices")))
     (start-process-shell-command "ttene" "*async-process-ttene*" (ttene-play-command-line voice))
-  (newline)))
+    (newline)))
+
+(defun ttene-mode-global-turn-on ()
+  (when (not (minibufferp))
+    (ttene-mode t)))
 
 (easy-mmode-define-minor-mode ttene-mode
                               "ってね"
                               nil
                               " ttene"
                               '(("\C-m" . ttene-play-voice)))
+
+(easy-mmode-define-global-mode global-ttene-mode
+                               ttene-mode
+                               ttene-mode-global-turn-on)
 
 (provide 'ttene)
 ;;; ttene.el ends here
