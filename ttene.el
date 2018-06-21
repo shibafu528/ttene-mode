@@ -23,6 +23,8 @@
 
 ;;; Code:
 
+(require 'magicalstick)
+
 (defvar ttene:voice-dir
   (expand-file-name "ttene-voices" user-emacs-directory)
   "音声ファイルの格納ディレクトリ")
@@ -31,6 +33,25 @@
   (cond ((eq system-type 'windows-nt) "mpg123")
         (t "afplay"))
   "音声ファイルの再生コマンド")
+
+(defun ttene-install-voices ()
+  "音声ファイルをダウンロード"
+  (interactive)
+  (unless (file-directory-p ttene:voice-dir)
+    (make-directory ttene:voice-dir))
+  (dolist (voice (magicalstick))
+    (when (string-match "てねっ[0-9]" voice)
+      (with-current-buffer (url-retrieve-synchronously voice)
+        (goto-char (point-min))
+        (re-search-forward "^$" nil 'move)
+        (forward-char)
+        (delete-region (point-min) (point))
+        (set-buffer-file-coding-system 'binary)
+        (write-file (format "%s/%s_%s"
+                            ttene:voice-dir
+                            (file-name-nondirectory (directory-file-name (file-name-directory voice)))
+                            (file-name-nondirectory voice)))
+        (kill-buffer)))))
 
 (defun ttene-pick-voice ()
   "音声ファイルをランダムにひとつ取得"
@@ -55,7 +76,7 @@
   (interactive)
   (let ((voice (ttene-pick-voice)))
     (unless voice
-      (error ("no voices installed.")))
+      (error ("no voices installed. try M-x ttene-install-voices")))
     (start-process-shell-command "ttene" "*async-process-ttene*" (ttene-play-command-line voice))
   (newline)))
 

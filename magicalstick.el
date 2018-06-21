@@ -44,7 +44,7 @@
             (format "%s://%s%s.%s"
                     magicalstick:protocol
                     magicalstick:host
-                    (expand-file-name (dom-attr node 'data-file) "/")
+                    (replace-regexp-in-string "^\./" "/" (dom-attr node 'data-file))
                     magicalstick:ext))
           (dom-by-class (magicalstick-get-dom) "sounds")))
 
