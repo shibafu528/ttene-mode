@@ -25,8 +25,9 @@
 
 (require 'dom)
 
-(defvar magicalstick:host "sanabutton.ojaru.jp")
-(defvar magicalstick:protocol "http")
+(defvar magicalstick:host "www.natorisana.love")
+(defvar magicalstick:prefix "sounds/")
+(defvar magicalstick:protocol "https")
 (defvar magicalstick:ext "mp3")
 
 (defun magicalstick-get-dom ()
@@ -41,10 +42,11 @@
 (defun magicalstick ()
   "Get sana button resource list."
   (mapcar (lambda (node)
-            (format "%s://%s%s.%s"
+            (format "%s://%s/%s%s.%s"
                     magicalstick:protocol
                     magicalstick:host
-                    (replace-regexp-in-string "^\./" "/" (dom-attr node 'data-file))
+                    magicalstick:prefix
+                    (replace-regexp-in-string "^\./" "" (dom-attr node 'data-file))
                     magicalstick:ext))
           (dom-by-class (magicalstick-get-dom) "sounds")))
 
